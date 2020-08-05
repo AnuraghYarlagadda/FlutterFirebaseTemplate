@@ -6,6 +6,7 @@ import 'package:project/Authentication/LoginPage.dart';
 import 'package:project/Authentication/SignUp.dart';
 import 'package:project/Home/HomePage.dart';
 import 'package:project/UI/Loading.dart';
+import 'Screens/ProjectDetails.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,9 +28,11 @@ class MyApp extends StatelessWidget {
           home: LandingPage(),
           debugShowCheckedModeBanner: false,
           routes: {
-            '/signup': (BuildContext context) => new SignUp(),
-            '/landingpage': (BuildContext context) => new LandingPage(),
-            '/homepage': (BuildContext context) => new HomePage(),
+            '/signup': (context) => SignUp(),
+            '/landingpage': (context) => LandingPage(),
+            '/homepage': (context) => HomePage(),
+            "/propertyDetails": (context) =>
+                PropertyDetails(ModalRoute.of(context).settings.arguments)
           },
         ));
   }

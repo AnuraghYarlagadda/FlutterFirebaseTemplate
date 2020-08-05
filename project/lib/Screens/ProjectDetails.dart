@@ -30,6 +30,8 @@ class _PropertyDetailsState extends State<PropertyDetails> {
     await auth.getUser().then((value) => setState(() {
           this.user = value;
         }));
+    // Listen to Doc changes
+    docLis();
   }
 
   withDrawLease(String id) async {
@@ -57,6 +59,17 @@ class _PropertyDetailsState extends State<PropertyDetails> {
     } catch (e) {
       print(e);
     }
+  }
+
+  docLis() {
+    Firestore.instance
+        .collection('/properties')
+        .document("anuraghsai3@gmail.com")
+        .snapshots()
+        .listen((DocumentSnapshot documentSnapshot) {
+      print("Lis");
+      print(documentSnapshot.data);
+    }).onError((e) => print(e));
   }
 
   @override

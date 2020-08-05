@@ -42,30 +42,35 @@ class _HomePageState extends State<HomePage> {
     await auth.getUser().then((value) => setState(() {
           this.user = value;
         }));
-    // Fetch properties after user is loaded!
-    await fetchProperties();
+    // Fetch Properties is a listener Call it after getting user
+    fetchProperties();
   }
 
-  fetchProperties() async {
+  fetchProperties() {
     try {
-      var res =
-          await Firestore.instance.collection("/properties").getDocuments();
-      this.tenantProps.clear();
-      for (var item in res.documents) {
-        DocumentSnapshot documentSnapshot = item;
-        List<dynamic> properties = documentSnapshot?.data["myProperties"];
-        for (var x in properties) {
-          if (x["tenant"] == this.user?.email) {
-            setState(() {
-              tenantProps.add(Property.fromJson(x));
-            });
+      Firestore.instance
+          .collection("/properties")
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        print(querySnapshot.documents);
+        //Clearing Array whenever it listens
+        this.tenantProps.clear();
+        for (var item in querySnapshot.documents) {
+          DocumentSnapshot documentSnapshot = item;
+          List<dynamic> properties = documentSnapshot?.data["myProperties"];
+          for (var x in properties) {
+            if (x["tenant"] == this.user?.email) {
+              setState(() {
+                tenantProps.add(Property.fromJson(x));
+              });
+            }
           }
+          setState(() {
+            this._status = Status.loaded;
+          });
+          print(tenantProps.length);
         }
-        setState(() {
-          this._status = Status.loaded;
-        });
-        print(tenantProps.length);
-      }
+      });
     } catch (e) {
       print(e);
     }
@@ -80,11 +85,6 @@ class _HomePageState extends State<HomePage> {
           title: Text('Home'),
           leading: Icon(Icons.home),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: () async {
-                  await fetchProperties();
-                }),
             Container(
               width: 60.0,
               child: PopupMenuButton<String>(

@@ -8,6 +8,7 @@ class Property {
   Property.fromJson(LinkedHashMap<dynamic, dynamic> data)
       : propertyName = data["propertyName"],
         address = data["address"],
+        area = data["area"],
         cost = data["cost"],
         tenant = data["tenant"],
         id = data["id"],
